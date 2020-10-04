@@ -49,12 +49,17 @@ def BestBuy():
            print('Xbox Out of Stock at BestBuy')
            driver.refresh()
         except NoSuchElementException:
-            print('Xbox Series X in Stock @ BestBuy!')
-            print('Getting the web address')
-            web_address = driver.current_url
-            send_email('BestBuy', web_address)
-            print('Email Sent')
-            break
+            driver.refresh()
+            try:
+                driver.find_element(By.XPATH,
+                                    "//div[@class='v-m-top-m v-p-top-m v-border v-border-top'][contains(.,'Coming Soon')]")
+            except NoSuchElementException:
+                print('Xbox Series X in Stock @ BestBuy!')
+                print('Getting the web address')
+                web_address = driver.current_url
+                send_email('BestBuy', web_address)
+                print('Email Sent')
+                break
 
 
 
@@ -68,12 +73,17 @@ def Amazon():
            print('Xbox Out of Stock at Amazon')
            driver.refresh()
         except NoSuchElementException:
-            print('Xbox Series X in Stock @ Amazon!')
-            print('Getting the web address')
-            web_address = driver.current_url
-            send_email('Amazon', web_address)
-            print('Email Sent')
-            break
+            driver.refresh()
+            try:
+                driver.find_element(By.XPATH,
+                                    "//div[@id='availability']/span[@class='a-size-medium a-color-price'][contains(.,'Currently unavailable')]")
+            except NoSuchElementException:
+                print('Xbox Series X in Stock @ Amazon!')
+                print('Getting the web address')
+                web_address = driver.current_url
+                send_email('Amazon', web_address)
+                print('Email Sent')
+                break
 
 def Target():
     url = r'https://www.target.com/p/xbox-series-x-console/-/A-80790841'
@@ -85,12 +95,19 @@ def Target():
            print('Xbox Out of Stock at Target')
            driver.refresh()
         except NoSuchElementException:
-            print('Xbox Series X in Stock @ Target!')
-            print('Getting the web address')
-            web_address = driver.current_url
-            send_email('Target', web_address)
-            print('Email Sent')
-            break
+            time.sleep(5)
+            print('There may be stock....')
+            driver.refresh()
+            try:
+                driver.find_element(By.XPATH,
+                                    "//div[@class='h-text-md h-text-grayDark'][contains(.,'Preorders have sold out. Check back on release date')]")
+            except NoSuchElementException:
+                print('Xbox Series X in Stock @ Target!')
+                print('Getting the web address')
+                web_address = driver.current_url
+                send_email('Target', web_address)
+                print('Email Sent')
+                break
 
 def GameStop():
     url = r'https://www.gamestop.com/video-games/xbox-series-x/consoles/products/xbox-series-x/11108371.html' \
@@ -120,5 +137,4 @@ if __name__ == '__main__':
     p2.start()
     p3 = Process(target=Target)
     p3.start()
-    # Having an issue with GameStop. Getting false positives due to poor site loading
     p4 = Process(target=GameStop)
